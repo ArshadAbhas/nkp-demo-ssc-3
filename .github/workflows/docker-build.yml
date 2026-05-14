@@ -1,0 +1,35 @@
+name: Build and Push Frontend Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Login to Harbor
+        run: |
+          docker login ${{ secrets.HARBOR_URL }} \
+          -u ${{ secrets.HARBOR_USERNAME }} \
+          -p ${{ secrets.HARBOR_PASSWORD }}
+
+      - name: Build Docker Image
+        run: |
+          docker build \
+          -t ${{ secrets.HARBOR_URL }}/${{ secrets.HARBOR_PROJECT }}/frontend:latest \
+          -t ${{ secrets.HARBOR_URL }}/${{ secrets.HARBOR_PROJECT }}/frontend:${{ github.sha }} \
+          ./frontend
+
+      - name: Push Latest Image
+        run: |
+          docker push ${{ secrets.HARBOR_URL }}/${{ secrets.HARBOR_PROJECT }}/frontend:latest
+
+      - name: Push SHA Image
+        run: |
+          docker push ${{ secrets.HARBOR_URL }}/${{ secrets.HARBOR_PROJECT }}/frontend:${{ github.sha }}
