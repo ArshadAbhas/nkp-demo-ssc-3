@@ -24,7 +24,7 @@ jobs:
           docker build \
           -t ${{ secrets.HARBOR_URL }}/${{ secrets.HARBOR_PROJECT }}/frontend:latest \
           -t ${{ secrets.HARBOR_URL }}/${{ secrets.HARBOR_PROJECT }}/frontend:${{ github.sha }} \
-          ./frontend
+          ./apps/frontend
 
       - name: Push Latest Image
         run: |
